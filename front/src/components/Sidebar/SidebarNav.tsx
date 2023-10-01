@@ -8,7 +8,7 @@ export function SidebarNav() {
     <Stack spacing={"12"} align={"flex-start"}>
       <NavSection title={"Geral"}>
         <NavLink href={"/dashboard"} icon={RiDashboardLine}>Dashboard</NavLink>
-        <NavLink href={"/carregar-dados"} icon={RiUpload2Line}>Carregar arquivo</NavLink>
+        <NavLink href={"/uploads"} icon={RiUpload2Line}>Carregar arquivo</NavLink>
       </NavSection>
     </Stack>
   )
