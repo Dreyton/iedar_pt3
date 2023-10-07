@@ -1,7 +1,7 @@
 FROM python:3.11.5-slim
 
 RUN pip install --upgrade pip && \
-  pip install --no-cache-dir fastapi uvicorn pandas mlxtend openpyxl python-multipart
+  pip install --no-cache-dir fastapi uvicorn pandas mlxtend openpyxl python-multipart passlib
 
 RUN useradd -ms /bin/bash python
 

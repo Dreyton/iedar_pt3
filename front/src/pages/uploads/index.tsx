@@ -1,6 +1,6 @@
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
-import { Box, Button, Flex, Heading, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger, Stack, useToast } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Link, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger, Stack, useToast } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from 'react-dropzone'
 import { RiUpload2Line } from "react-icons/ri";
@@ -11,7 +11,7 @@ import { useApi } from "@/context/api-context";
 import { Slider } from "@/components/Form/Slider";
 import { useRouter } from "next/navigation";
 import { Input } from '@/components/Form/Input'
-import { InfoIcon } from '@chakra-ui/icons'
+import { InfoIcon, DownloadIcon } from '@chakra-ui/icons'
 
 const validationSchema = Yup.object().shape({
   dataset: Yup.mixed().required("Arquivo de dados é obrigatório"),
@@ -32,7 +32,7 @@ export default function Dropzone() {
   const { register, handleSubmit, formState: { errors, isSubmitting }, setValue, watch } = useForm<FormData>({
     resolver: yupResolver(validationSchema)
   });
-  const { fetchData, rules, setRules } = useApi();
+  const { fetchData, rules, setRules, fetchDownloadFile } = useApi();
   const toast = useToast()
   const { push } = useRouter()
   const watchFields = watch(["rule_name"]) // you can also target specific fields by their names
@@ -98,6 +98,17 @@ export default function Dropzone() {
     return changeConfianceValueSlider / 100
   }
 
+  const handleDownloadFile = async () => {
+    try {
+      await fetchDownloadFile();
+    } catch (error: any) {
+      toast({
+        status: "error",
+        title: error.message,
+      })
+    }
+  }
+
   return (
     <Box>
       <Header />
@@ -109,7 +120,6 @@ export default function Dropzone() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              marginBottom: '64px'
             }}>
               <Box
                 bg="gray.800"
@@ -170,6 +180,28 @@ export default function Dropzone() {
               >
                 Enviar
               </Button>
+
+              <Link
+                href={'http://localhost:8000/files/download'}
+                mt={4}
+                fontSize={'sm'}
+                color={'gray.100'}
+                transition={'all 0.2s ease-in-out'}
+                _hover={{
+                  color: 'pink.500'
+                }}
+                __css={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer'
+                }}
+              >
+                Baixar modelo de arquivo
+                <DownloadIcon
+                  ml={'2'}
+                />
+                </Link>
             </form>
 
             <Box

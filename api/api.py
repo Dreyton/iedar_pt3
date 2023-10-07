@@ -2,6 +2,7 @@ from typing import Annotated
 import glob
 from fastapi import FastAPI, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from package.Analise_de_dados_Apriori import generate_association_rules
 from package.create_database import create_rule
 import pickle
@@ -61,3 +62,9 @@ def read_root():
     return {
         "data": filenames
     }
+
+
+@app.get("/files/download")
+def rea_root():
+    some_file_path = "/files/template.xlsx"
+    return FileResponse(some_file_path)

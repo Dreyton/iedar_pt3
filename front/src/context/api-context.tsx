@@ -32,6 +32,7 @@ interface ApiContextType {
   fetchData: (data: FetchData) => Promise<void>
   fetchAssociationsRules: (data: string) => Promise<void>
   setRules: React.Dispatch<React.SetStateAction<RulesData>>;
+  fetchDownloadFile: () => Promise<void>
 }
 
 const ApiContext = createContext({} as ApiContextType);
@@ -75,8 +76,16 @@ export const ApiProvider = ({ children }: ApiContextProviderProps) => {
     }
   };
 
+  const fetchDownloadFile = async () => {
+    try {
+      await api.get('/files/download');
+    } catch (error) {
+      console.error('Erro ao baixar arquivo:', error);
+    }
+  };
+
   return (
-    <ApiContext.Provider value={{ apiData, fetchData, rules, fetchAssociationsRules, setRules }}>
+    <ApiContext.Provider value={{ apiData, fetchData, rules, fetchAssociationsRules, setRules, fetchDownloadFile }}>
       {children}
     </ApiContext.Provider>
   );
