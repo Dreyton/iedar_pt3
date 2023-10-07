@@ -1,6 +1,6 @@
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
-import { Box, Button, Flex, Heading, Stack, useToast } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger, Stack, useToast } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from 'react-dropzone'
 import { RiUpload2Line } from "react-icons/ri";
@@ -11,6 +11,7 @@ import { useApi } from "@/context/api-context";
 import { Slider } from "@/components/Form/Slider";
 import { useRouter } from "next/navigation";
 import { Input } from '@/components/Form/Input'
+import { InfoIcon } from '@chakra-ui/icons'
 
 const validationSchema = Yup.object().shape({
   dataset: Yup.mixed().required("Arquivo de dados é obrigatório"),
@@ -191,12 +192,56 @@ export default function Dropzone() {
             </Flex>
 
             <Box w={"100%"} maxW={"420px"}>
-              <p>confiança</p>
+              <Flex alignItems={'center'} gap={'2'}>
+                <p>confiança</p>
+                <Popover>
+                  <PopoverTrigger>
+                    <InfoIcon
+                      cursor={'pointer'}
+                      _hover={{
+                        color: 'pink.500'
+                      }}
+                    />
+                  </PopoverTrigger>
+                  <PopoverContent
+                    bg={'gray.800'}
+                  >
+                    <PopoverArrow />
+                    <PopoverCloseButton />
+                    <PopoverHeader>Informações</PopoverHeader>
+                    <PopoverBody>
+                      A confiança é a probabilidade de que uma regra seja verdadeira, dado que o antecedente é verdadeiro.
+                    </PopoverBody>
+                  </PopoverContent>
+                </Popover>
+              </Flex>
               <Slider
                 value={changeConfianceValueSlider}
                 onChange={changeValueConfianceSlider}
               />
-              <p>Suporte</p>
+              <Flex alignItems={'center'} gap={'2'}>
+                <p>Suporte</p>
+                <Popover>
+                  <PopoverTrigger>
+                    <InfoIcon
+                      cursor={'pointer'}
+                      _hover={{
+                        color: 'pink.500'
+                      }}
+                    />
+                  </PopoverTrigger>
+                  <PopoverContent
+                    bg={'gray.800'}
+                  >
+                    <PopoverArrow />
+                    <PopoverCloseButton />
+                    <PopoverHeader>Informações</PopoverHeader>
+                    <PopoverBody>
+                      O suporte é a probabilidade de que uma regra seja verdadeira.
+                    </PopoverBody>
+                  </PopoverContent>
+                </Popover>
+              </Flex>
               <Slider
                 value={changeSupportValueSlider}
                 onChange={changeValueSupportSlider}
