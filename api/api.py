@@ -1,11 +1,17 @@
-from typing import Annotated
 import glob
+import pickle
+from typing import Annotated
 from fastapi import FastAPI, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from package.Analise_de_dados_Apriori import generate_association_rules
 from package.create_database import create_rule
-import pickle
+from src.infra.ormSqlAlchemy.helpers.connection import PgConnection
+from src.infra.ormSqlAlchemy.entities.user import Base
+from pydantic import BaseModel
+from src.infra.ormSqlAlchemy.repositories.user import get_user_by_email
+from src.infra.cryptographic.hasher import Hasher
+from src.infra.cryptographic.generate_token import GenerateToken
 
 app = FastAPI()
 origins = [
@@ -19,6 +25,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+engine = PgConnection.connection()
+Base.metadata.create_all(bind=engine)
 
 
 class NotGenerateRulesException(Exception):
@@ -68,3 +77,29 @@ def read_root():
 def rea_root():
     some_file_path = "/files/template.xlsx"
     return FileResponse(some_file_path)
+
+
+class Item(BaseModel):
+    email: str
+    password: str
+
+
+@app.post("/login")
+async def login(body: Item):
+    user = await get_user_by_email(body.email)
+    if user is None:
+        return {
+            "error": "Credenciais inválidas"
+        }
+    hasher = Hasher()
+    isValid = hasher.verify(body.password, user.password)
+    if not isValid:
+        return {
+            "error": "Credenciais inválidas"
+        }
+    generate_token = GenerateToken("secret")
+    access_token = generate_token.generate(
+        {"email": user.email, "permission": user.permission})
+    return {
+        "data": access_token
+    }

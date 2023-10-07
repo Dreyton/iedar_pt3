@@ -1,0 +1,7 @@
+1. Email e senha do usuário ✅
+2. Verificar se existe um usuario com email fornecido. ✅
+3. Se nao existir retornar um erro. ✅
+4. Verificar se a senha do usuario e igual ao hash do banco. ✅
+5. Se nao for igual retornar um erro. ✅
+6. Gerar um token JWT com expiracao de 30min com o id e permission do usuario. ✅
+7. Retornar o token. ✅
