@@ -3,10 +3,13 @@ import { Input } from '@/components/Form/Input'
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useApi } from "@/context/api-context";
+import { useRouter } from "next/router";
+import { useToast } from "@chakra-ui/react";
 
 interface SignInFormProps {
-  email?: string
-  password?: string
+  email: string
+  password: string
 }
 
 const signInFormSchema = yup.object().shape({
@@ -15,13 +18,23 @@ const signInFormSchema = yup.object().shape({
 })
 
 export default function SignIn() {
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState } = useForm<SignInFormProps>({
     resolver: yupResolver(signInFormSchema)
   })
 
+  const toast = useToast()
+  const {push} = useRouter()
+  const {fetchLogin} = useApi()
   const onSubmit: SubmitHandler<SignInFormProps> = async (data) => {
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    console.log(data);
+    try {
+      await fetchLogin(data)
+      push('/dashboard')
+    } catch(error:any) {
+      toast({
+        status: 'error', 
+        title: error.message
+      })
+    }
     
   }
 

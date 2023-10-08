@@ -13,7 +13,7 @@ class UserRepository:
 
     def create_user(self):
         hasher = Hasher()
-        user = User(email="tarcio@mail.com",
+        user = User(email="lourivalformal@gmail.com",
                     password=hasher.hash("123456"), permission="admin")
         self.session.add(user)
         self.session.commit()
