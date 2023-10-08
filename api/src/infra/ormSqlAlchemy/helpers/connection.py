@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from src.main.config.env import env
 
 
 class PgConnection:
@@ -15,8 +16,7 @@ class PgConnection:
 
     @staticmethod
     def connection():
-        connection_url = "postgresql://postgres:postgres@172.31.0.2:5432/tcc"
-        engine = create_engine(connection_url)
+        engine = create_engine(env.DATABASE_URL)
         return engine
 
     def create_session(self):

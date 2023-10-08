@@ -3,18 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.infra.ormSqlAlchemy.helpers.connection import PgConnection
 from src.infra.ormSqlAlchemy.entities.user import Base
 from src.main.routes.base import api_router
+from src.main.config.env import env
 
 origins = [
     "http://localhost:3000",
 ]
-
-
-class Settings:
-    PROJECT_NAME: str = "API - FastAPI 🔥"
-    PROJECT_VERSION: str = "1.0.0"
-
-
-settings = Settings()
 
 
 def create_connection():
@@ -27,8 +20,7 @@ def include_routes(app):
 
 
 def start_app():
-    app = FastAPI(title=settings.PROJECT_NAME,
-                  version=settings.PROJECT_VERSION)
+    app = FastAPI(title=env.PROJECT_NAME, version=env.PROJECT_VERSION)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,

@@ -3,19 +3,18 @@ from src.infra.ormSqlAlchemy.helpers.connection import PgConnection
 from src.infra.cryptographic.hasher import Hasher
 
 
-async def get_user_by_email(email: str):
-    connection = PgConnection()
-    session = connection.create_session()
-    user = session.query(User).filter(User.email == email).first()
-    return user
+class UserRepository:
+    def __init__(self):
+        self.session = PgConnection().create_session()
 
+    def get_user_by_email(self, email: str):
+        user = self.session.query(User).filter(User.email == email).first()
+        return user
 
-async def create_user():
-    hasher = Hasher()
-    connection = PgConnection()
-    session = connection.create_session()
-    user = User(email="tarcio@mail.com",
-                password=hasher.hash("123456"), permission="admin")
-    session.add(user)
-    session.commit()
-    session.close()
+    def create_user(self):
+        hasher = Hasher()
+        user = User(email="tarcio@mail.com",
+                    password=hasher.hash("123456"), permission="admin")
+        self.session.add(user)
+        self.session.commit()
+        self.session.close()

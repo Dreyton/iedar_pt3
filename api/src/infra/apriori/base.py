@@ -1,0 +1,1 @@
+from src.infra.apriori.generate_association_rules import GenerateAssociationRules
