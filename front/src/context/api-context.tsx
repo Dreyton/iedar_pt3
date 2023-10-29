@@ -21,11 +21,17 @@ interface FetchData {
 }
 
 interface DataProperties {
-  id: string,
   rule_name: string,
   antecedents: string[],
   consequents: string[],
   confidence: number,
+  antecedent_support: string;
+  consequent_support: string;
+  support: string;
+  lift: string;
+  leverage: string;
+  conviction: string;
+  zhangs_metric: string;
 }
 
 interface ApiContextType {
@@ -35,6 +41,7 @@ interface ApiContextType {
   fetchAssociationsRules: (data: string) => Promise<void>
   setRules: React.Dispatch<React.SetStateAction<RulesData>>;
   fetchDownloadFile: () => Promise<void>
+  fetchSaveAssociationRules: (data: DataProperties[]) => Promise<void>
 }
 
 const ApiContext = createContext({} as ApiContextType);
@@ -96,8 +103,24 @@ export const ApiProvider = ({ children }: ApiContextProviderProps) => {
 
   };
 
+  const fetchSaveAssociationRules = async (data: DataProperties[]) => {
+    try {
+      await api.post('/associations', data);
+    } catch (error) {
+      console.error('Erro ao salvar regras:', error);
+    }
+  };
+
   return (
-    <ApiContext.Provider value={{ apiData, fetchData, rules, fetchAssociationsRules, setRules, fetchDownloadFile }}>
+    <ApiContext.Provider value={{
+      apiData,
+      fetchData,
+      rules,
+      fetchAssociationsRules,
+      setRules,
+      fetchDownloadFile,
+      fetchSaveAssociationRules
+    }}>
       {children}
     </ApiContext.Provider>
   );

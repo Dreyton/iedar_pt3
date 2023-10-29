@@ -11,9 +11,25 @@ router = APIRouter()
 @router.post("/uploads")
 def uploadFile(dataset: Annotated[bytes, File()], rule_name: str, min_support: float = 0.02, confiance: float = 0.04):
     try:
-        httpResponse = GenerateAssociationRulesService.execute(
+        result = GenerateAssociationRulesService.execute(
             dataset, rule_name, min_support, confiance)
-        return httpResponse
+        httpResponse: list = []
+        for item in result:
+            httpResponse.append({
+                "rule_name": rule_name,
+                "antecedents": item['antecedents'][0],
+                "consequents": item['consequents'][0],
+                "antecedent_support": item['antecedent support'],
+                "consequent_support": item['consequent support'],
+                "support": item['support'],
+                "confidence": item['confidence'],
+                "lift": item['lift'],
+                "leverage": item['leverage'],
+                "conviction": item['conviction'],
+                "zhangs_metric": item['zhangs_metric'],
+            })
+
+        return {"data": httpResponse}
     except Exception as e:
         return {"error": e.message}
 

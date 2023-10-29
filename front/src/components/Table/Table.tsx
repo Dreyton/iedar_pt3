@@ -5,9 +5,10 @@ import { useEffect, useState } from "react";
 
 interface TableProperties {
   isModal?: boolean,
+  style?: boolean
 }
 
-export const Table = ({ isModal = false }: TableProperties) => {
+export const Table = ({ isModal = false, style=false }: TableProperties) => {
   const { apiData } = useApi();
   const [selectedRule, setSelectedRule] = useState('');
 
@@ -33,7 +34,7 @@ export const Table = ({ isModal = false }: TableProperties) => {
   }
 
   return (
-    <Box borderRadius={8} bg={"gray.800"} p={"8"} mt={"4"}>
+    <Box borderRadius={8} bg={"gray.800"} p={"8"} mt={"4"} filter={style ? 'blur(3px)' : 'none'}>
       <Flex mb={"8"} justify={"space-between"} align={"center"}>
         <Heading size={"lg"} fontWeight={"normal"}>Associações</Heading>
         {!isModal && <Select

@@ -23,4 +23,4 @@ class GenerateAssociationRulesService:
         if len(associations) == 0:
             raise NotGenerateRulesException(
                 "Não foi possível gerar regras de associação")
-        return {"data": associations}
+        return associations
