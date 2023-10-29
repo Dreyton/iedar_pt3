@@ -21,24 +21,16 @@ interface FetchData {
 }
 
 interface DataProperties {
+  id: string,
+  rule_name: string,
   antecedents: string[],
   consequents: string[],
   confidence: number,
 }
 
-interface FetchLogin {
-  email: string,
-  password: string,
-}
-
-interface UserData {
-  accessToken: string[],
-}
-
 interface ApiContextType {
   apiData: ApiData;
   rules: RulesData;
-  fetchLogin: (data: FetchLogin) => Promise<void>
   fetchData: (data: FetchData) => Promise<void>
   fetchAssociationsRules: (data: string) => Promise<void>
   setRules: React.Dispatch<React.SetStateAction<RulesData>>;
@@ -50,15 +42,17 @@ const ApiContext = createContext({} as ApiContextType);
 export const ApiProvider = ({ children }: ApiContextProviderProps) => {
   const [apiData, setApiData] = useState<ApiData>({ data: [] });
   const [rules, setRules] = useState<RulesData>({ data: [] });
-  const [authData, setAuthData] = useState<UserData>()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get('/rules');
-        setRules(response.data);
+          const response = await api.get(`/associations`);
+          setApiData({
+            data: response.data
+          });
       } catch (error: any) {
-        throw new Error(error.message);
+        console.log('Erro ao buscar regras:', error.message);
+        // throw new Error(error.message);
       }
     };
     fetchData();
@@ -78,10 +72,16 @@ export const ApiProvider = ({ children }: ApiContextProviderProps) => {
     setApiData(response.data);
   };
 
-  const fetchAssociationsRules = async (data: string) => {
+  const fetchAssociationsRules = async (rule_name: string) => {
     try {
-      const response = await api.get(`/uploads?rule_name=${data}`);
-      setApiData(response.data);
+      const response = await api.get('/associations', {
+        params: {
+          rule_name
+        }
+      });
+      setApiData({
+        data: response.data
+      });
     } catch (error) {
       console.error('Erro ao enviar arquivo:', error);
     }
@@ -93,17 +93,11 @@ export const ApiProvider = ({ children }: ApiContextProviderProps) => {
     } catch (error) {
       console.error('Erro ao baixar arquivo:', error);
     }
-    
-  };
 
-  const fetchLogin = async (data: FetchLogin) => {
-    const response = await api.post('/login', data);
-    if (response.data.error) throw new Error(response.data.error)
-    setAuthData(response.data)
   };
 
   return (
-    <ApiContext.Provider value={{ apiData, fetchData, rules, fetchAssociationsRules, setRules, fetchDownloadFile, fetchLogin }}>
+    <ApiContext.Provider value={{ apiData, fetchData, rules, fetchAssociationsRules, setRules, fetchDownloadFile }}>
       {children}
     </ApiContext.Provider>
   );

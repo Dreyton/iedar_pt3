@@ -1,2 +1,4 @@
 from src.services.authentication import AuthenticationService
 from src.services.generate_association_rules import GenerateAssociationRulesService
+from src.services.ensure_authenticated import EnsureAuthenticatedService
+from src.services.create_association_rules import CreateAssociationRulesService

@@ -11,6 +11,7 @@ import { useApi } from "@/context/api-context";
 import { Slider } from "@/components/Form/Slider";
 import { useRouter } from "next/navigation";
 import { Input } from '@/components/Form/Input'
+import { Modal } from '@/components/Modal'
 import { InfoIcon, DownloadIcon } from '@chakra-ui/icons'
 
 const validationSchema = Yup.object().shape({
@@ -29,6 +30,7 @@ export default function Dropzone() {
   const [selectedFile, setSelectedFile] = useState<File>();
   const [changeConfianceValueSlider, setChangeConfianceValueSlider] = useState(50);
   const [changeSupportValueSlider, setChangeSupportValueSlider] = useState(50);
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const { register, handleSubmit, formState: { errors, isSubmitting }, setValue, watch } = useForm<FormData>({
     resolver: yupResolver(validationSchema)
   });
@@ -61,13 +63,14 @@ export default function Dropzone() {
         status: "success",
         title: "Regras geradas com sucesso!",
       })
+      setIsOpenModal(true);
       setRules({
         data: [...rules.data, data.rule_name]
       })
       setSelectedFile(undefined);
-      setTimeout(() => {
-        push('/dashboard');
-      }, 3000);
+      // setTimeout(() => {
+      //   push('/dashboard');
+      // }, 3000);
     } catch (error: any) {
       toast({
         status: "error",
@@ -107,6 +110,14 @@ export default function Dropzone() {
         title: error.message,
       })
     }
+  }
+
+  const handleOpenModal = () => {
+    setIsOpenModal(true);
+  }
+
+  const handleCloseModal = () => {
+    setIsOpenModal(false);
   }
 
   return (
@@ -282,6 +293,7 @@ export default function Dropzone() {
           </Box>
         </Box>
       </Flex>
+      {(isOpenModal && !isSubmitting)  && <Modal isOpen={isOpenModal} onClose={handleCloseModal} />}
     </Box>
   );
 }

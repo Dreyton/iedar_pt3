@@ -1,0 +1,4 @@
+Falta integrar a rota de criacao de assossiacao com backend
+falta ajustar o bug de trazer apenas as associacoes que estao selcionadas (esta trazendo todas, talvez trazer a ultima associacao criada no login)
+falta proteger as rotas
+Grafico falta os dados do backend

@@ -3,12 +3,23 @@ import { Pagination } from "@/components/Pagination";
 import { useApi } from "@/context/api-context";
 import { useEffect, useState } from "react";
 
-export const Table = () => {
-  const { fetchAssociationsRules, apiData, rules } = useApi();
+interface TableProperties {
+  isModal?: boolean,
+}
+
+export const Table = ({ isModal = false }: TableProperties) => {
+  const { apiData } = useApi();
   const [selectedRule, setSelectedRule] = useState('');
 
   const handleRuleChange = (event: any) => {
     setSelectedRule(event.target.value);
+  }
+
+  const handleDataFiltered = () => {
+    if (selectedRule === '') {
+      return apiData.data;
+    }
+    return apiData.data.filter((data) => data.rule_name === selectedRule);
   }
 
   const getNumberInPercentage = (number: number) => {
@@ -17,27 +28,23 @@ export const Table = () => {
     return `${numberInPercentage.toFixed(0)}%`;
   }
 
-  useEffect(() => {
-    const fetchData = async () => {
-     await fetchAssociationsRules(selectedRule);
-    };
-    if (selectedRule) fetchData();
-  }, [selectedRule]);
+  const removeDuplicates = (array: string[]) => {
+    return [...new Set(array)];
+  }
 
   return (
     <Box borderRadius={8} bg={"gray.800"} p={"8"} mt={"4"}>
       <Flex mb={"8"} justify={"space-between"} align={"center"}>
         <Heading size={"lg"} fontWeight={"normal"}>Associações</Heading>
-        <Select
+        {!isModal && <Select
           width={240}
           fontSize={"sm"}
           value={selectedRule}
           onChange={handleRuleChange}
           >
-          {rules.data.map(rule => (
-            <option key={rule} value={rule}>{rule}</option>
-          ))}
-        </Select>
+         { removeDuplicates(apiData.data.map((data) => data.rule_name)).map((rule: string, index: number) => {
+          return (<option key={index} value={rule}>{rule}</option>)})}
+        </Select>}
       </Flex>
       <ChakaraTable colorScheme={"whiteAlpha"}>
         <Thead>
@@ -50,7 +57,7 @@ export const Table = () => {
           </Tr>
         </Thead>
         <Tbody>
-          { apiData?.data.map((data, index) => {
+          { handleDataFiltered()?.map((data, index) => {
             return (
               <Tr key={index}>
                 <Td>
@@ -69,7 +76,7 @@ export const Table = () => {
             )})}
         </Tbody>
       </ChakaraTable>
-      <Pagination />
+      {!isModal && <Pagination />}
     </Box>
   )
 }

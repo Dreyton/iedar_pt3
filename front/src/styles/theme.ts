@@ -26,5 +26,16 @@ export const theme = extendTheme({
         color: 'gray.50'
       }
     }
+  },
+  components: {
+    Modal: {
+      baseStyle: (props: any) => ({
+        dialog: {
+          maxWidth: ["95%", "95%", "95%"],
+          minWidth: "95%",
+          bg: "gray.800",
+        }
+      })
+    }
   }
 })

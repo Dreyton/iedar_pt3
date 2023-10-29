@@ -3,7 +3,7 @@ import { Input } from '@/components/Form/Input'
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useApi } from "@/context/api-context";
+import { useAuthContext } from "@/context/auth-context";
 import { useRouter } from "next/router";
 import { useToast } from "@chakra-ui/react";
 
@@ -24,29 +24,29 @@ export default function SignIn() {
 
   const toast = useToast()
   const {push} = useRouter()
-  const {fetchLogin} = useApi()
+  const {signIn} = useAuthContext()
   const onSubmit: SubmitHandler<SignInFormProps> = async (data) => {
     try {
-      await fetchLogin(data)
+      await signIn(data)
       push('/dashboard')
     } catch(error:any) {
       toast({
-        status: 'error', 
+        status: 'error',
         title: error.message
       })
     }
-    
+
   }
 
 
   return (
-    <Flex 
-      w="100vw" 
-      h="100vh" 
-      align="center" 
+    <Flex
+      w="100vw"
+      h="100vh"
+      align="center"
       justify="center"
     >
-      <Flex 
+      <Flex
         as="form"
         w="100%"
         maxW={360}
@@ -58,20 +58,20 @@ export default function SignIn() {
       >
 
         <Stack spacing="4">
-          <Input 
+          <Input
             label="E-mail"
             error={formState.errors.email}
-            {...register("email")} 
+            {...register("email")}
           />
-          <Input 
-            type="password" 
-            label="Senha" 
+          <Input
+            type="password"
+            label="Senha"
             error={formState.errors.password}
-            {...register("password")} 
+            {...register("password")}
            />
         </Stack>
 
-        <Button 
+        <Button
           type="submit"
           mt={6}
           colorScheme="pink"
