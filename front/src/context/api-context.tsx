@@ -54,9 +54,9 @@ export const ApiProvider = ({ children }: ApiContextProviderProps) => {
     const fetchData = async () => {
       try {
           const response = await api.get(`/associations`);
-          setApiData({
-            data: response.data
-          });
+          console.log(response.data);
+
+          setRules({data: response.data.map((rule: any) => rule.rule_name)});
       } catch (error: any) {
         console.log('Erro ao buscar regras:', error.message);
         // throw new Error(error.message);

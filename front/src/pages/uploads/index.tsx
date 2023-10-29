@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { Input } from '@/components/Form/Input'
 import { Modal } from '@/components/Modal'
 import { InfoIcon, DownloadIcon } from '@chakra-ui/icons'
+import { useAuthContext } from "@/context/auth-context";
 
 const validationSchema = Yup.object().shape({
   dataset: Yup.mixed().required("Arquivo de dados é obrigatório"),
@@ -35,8 +36,8 @@ export default function Dropzone() {
     resolver: yupResolver(validationSchema)
   });
   const { fetchData, rules, setRules, fetchDownloadFile } = useApi();
+  const { setRuleName } = useAuthContext();
   const toast = useToast()
-  const { push } = useRouter()
   const watchFields = watch(["rule_name"]) // you can also target specific fields by their names
 
   const { acceptedFiles, getInputProps, getRootProps } = useDropzone({
@@ -63,14 +64,12 @@ export default function Dropzone() {
         status: "success",
         title: "Regras geradas com sucesso!",
       })
-      setIsOpenModal(true);
       setRules({
         data: [...rules.data, data.rule_name]
       })
+      setIsOpenModal(true);
+      setRuleName(data.rule_name);
       setSelectedFile(undefined);
-      // setTimeout(() => {
-      //   push('/dashboard');
-      // }, 3000);
     } catch (error: any) {
       toast({
         status: "error",

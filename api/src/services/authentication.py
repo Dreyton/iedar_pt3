@@ -20,6 +20,16 @@ class AuthenticationService:
         isValid = self.hasher.verify(password, user.password)
         if not isValid:
             raise AuthenticationError("Credencias inválidas")
+        last_association = self.userRepository.get_last_association(user.id)
         access_token = self.generateToken.generate(
-            {"email": user.email, "permission": user.permission})
-        return {"data": access_token}
+            {
+                "email": user.email,
+                "permission": user.permission,
+                "rule_name": last_association.rule_name,
+            })
+        return {
+            "data": {
+                "access_token": access_token,
+                "rule_name": last_association.rule_name,
+            }
+        }

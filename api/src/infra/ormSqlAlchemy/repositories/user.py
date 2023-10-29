@@ -64,3 +64,8 @@ class UserRepository:
             query = query.filter(Associations.rule_name == rule_name)
         associations = query.all()
         return associations
+
+    def get_last_association(self, user_id: int):
+        association = self.session.query(Associations).filter(
+            Associations.user_id == user_id).order_by(Associations.id.desc()).first()
+        return association

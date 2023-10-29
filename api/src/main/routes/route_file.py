@@ -12,7 +12,7 @@ router = APIRouter()
 def uploadFile(dataset: Annotated[bytes, File()], rule_name: str, min_support: float = 0.02, confiance: float = 0.04):
     try:
         result = GenerateAssociationRulesService.execute(
-            dataset, rule_name, min_support, confiance)
+            dataset, min_support, confiance)
         httpResponse: list = []
         for item in result:
             httpResponse.append({

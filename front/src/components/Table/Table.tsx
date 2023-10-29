@@ -2,6 +2,8 @@ import { Box, Flex, Heading, Select, Table as ChakaraTable, Tbody, Td, Th, Thead
 import { Pagination } from "@/components/Pagination";
 import { useApi } from "@/context/api-context";
 import { useEffect, useState } from "react";
+import { useAuthContext } from "@/context/auth-context";
+import { api } from "@/apis/api";
 
 interface TableProperties {
   isModal?: boolean,
@@ -9,12 +11,22 @@ interface TableProperties {
 }
 
 export const Table = ({ isModal = false, style=false }: TableProperties) => {
-  const { apiData } = useApi();
-  const [selectedRule, setSelectedRule] = useState('');
+  const { apiData, rules, fetchAssociationsRules } = useApi();
+  const { rule_name } = useAuthContext();
+  const [selectedRule, setSelectedRule] = useState(rule_name || '');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (isModal) return;
+      await fetchAssociationsRules(selectedRule);
+    }
+    fetchData();
+  }, [selectedRule]);
 
   const handleRuleChange = (event: any) => {
     setSelectedRule(event.target.value);
   }
+
 
   const handleDataFiltered = () => {
     if (selectedRule === '') {
@@ -43,7 +55,7 @@ export const Table = ({ isModal = false, style=false }: TableProperties) => {
           value={selectedRule}
           onChange={handleRuleChange}
           >
-         { removeDuplicates(apiData.data.map((data) => data.rule_name)).map((rule: string, index: number) => {
+         { removeDuplicates(rules.data.map((rule, index) => rule)).map((rule, index) => {
           return (<option key={index} value={rule}>{rule}</option>)})}
         </Select>}
       </Flex>
